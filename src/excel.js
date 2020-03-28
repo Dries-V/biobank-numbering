@@ -1,4 +1,5 @@
 const readExcelFile = require('read-excel-file/node')
+const xls = require('excel4node')
 
 class Excel {
   constructor (file) {
@@ -21,8 +22,32 @@ class Excel {
     }
   }
 
-  async write () {
-
+  async write (file) {
+    const wb = new xls.Workbook()
+    for (const [sheetName, sheet] of Object.entries(this._sheets)) {
+      const ws = wb.addWorksheet(sheetName)
+      sheet.columnNames.forEach((name, i) => {
+        if (name != null && name !== 'null') {
+          ws.cell(1, i + 1).string(name)
+        }
+      })
+      sheet.rows.forEach((row, i) => {
+        row.data.forEach((val, j) => {
+          if (val != null && val !== 'null') {
+            if (typeof val === 'number') {
+              ws.cell(i + 2, j + 1).number(val)
+            } else if (typeof val === 'boolean') {
+              ws.cell(i + 2, j + 1).boolean(val)
+            } else if (val instanceof Date) {
+              ws.cell(i + 2, j + 1).date(val)
+            } else {
+              ws.cell(i + 2, j + 1).string(val)
+            }
+          }
+        })
+      })
+    }
+    wb.write(file)
   }
 
   get sheetNames () {
@@ -32,11 +57,15 @@ class Excel {
   getSheet (name) {
     return this._sheets[name]
   }
+
+  deleteSheet (name) {
+    delete this._sheets[name]
+  }
 }
 
 class Sheet {
   constructor (data) {
-    this._colNames = data[0].map(val => String(val))
+    this._colNames = data[0]
     this._colNameToIndex = Object.fromEntries(
       this._colNames.map((val, i) => [val, i])
     )
@@ -51,8 +80,13 @@ class Sheet {
     return this._colNameToIndex[name]
   }
 
+  /** @returns {Row[]} */
   get rows () {
     return this._rows
+  }
+
+  set rows (rows) {
+    this._rows = rows
   }
 
   get length () {
@@ -63,11 +97,16 @@ class Sheet {
 class Row {
   constructor (sheet, data) {
     this._sheet = sheet
-    this._data = data.map(val => String(val))
+    this._data = data
   }
 
   get length () {
     return this._data.length
+  }
+
+  /** @returns {string[]} */
+  get data () {
+    return this._data
   }
 
   getValue(column) {
