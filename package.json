@@ -1,0 +1,9 @@
+{
+  "name": "biobank-numbering",
+  "version": "0.0.0",
+  "main": "lib/index.js",
+  "repository": "https://github.com/Dries-V/biobank-numbering.git",
+  "author": "Dries Vaneechoutte <vaneechoutte.dries@gmail.com>",
+  "license": "MIT",
+  "private": true
+}
