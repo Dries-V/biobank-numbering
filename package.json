@@ -5,5 +5,8 @@
   "repository": "https://github.com/Dries-V/biobank-numbering.git",
   "author": "Dries Vaneechoutte <vaneechoutte.dries@gmail.com>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "yargs": "^15.3.1"
+  }
 }
