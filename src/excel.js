@@ -110,9 +110,6 @@ class Row {
   }
 
   getValue(column) {
-    if (typeof column === 'string') {
-      column = this._sheet.getColumnIndex(column)
-    }
     return this._data[column]
   }
 }

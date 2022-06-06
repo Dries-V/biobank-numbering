@@ -1,31 +1,37 @@
 const { Excel, Sheet } = require('./excel')
 
-const EXAMPLE = '/home/dries/Git/biobank-numbering/example/Biobank_aanvulling_2017.xlsx'
+const EXAMPLE = '/home/dries/Git/biobank-numbering/example/Biobank_aanvulling_2000-2006_bis.xlsx'
 
 const filterSamples = (sheet) => {
-  // Group rows per patient
+  const indexPatientID = sheet.getColumnIndex('PatientID')
+  const indexCollectionDate = sheet.getColumnIndex('Collection_date')
+  const indexVLSymbol = sheet.getColumnIndex('VL_Symbol')
+  const indexVLResult = sheet.getColumnIndex('VL_Result')
+  // Group rows per patient & year combo
   const perPatientRows = {}
   for (const row of sheet.rows) {
-    const patientId = row.getValue('PatientID')
-    let patientData = perPatientRows[patientId]
+    const patientId = row.data[indexPatientID]
+    const year = new Date(row.data[indexCollectionDate]).getFullYear()
+    const key = `${patientId}-${year}`
+    let patientData = perPatientRows[key]
     if (patientData == null) {
       patientData = []
-      perPatientRows[patientId] = patientData
+      perPatientRows[key] = patientData
     }
     patientData.push(row)
   }
   // Filter rows per patient
-  for (const [patientId, rows] of Object.entries(perPatientRows)) {
+  for (const [key, rows] of Object.entries(perPatientRows)) {
     const selectedRows = rows.filter(
       row =>
-       !(row.getValue('VL_Symbol') === '<' && parseInt(row.getValue('VL_Result')) === 20)
+       !(row.data[indexVLSymbol] === '<' && parseInt(row.data[indexVLResult]) === 50)
     )
     if (selectedRows.length === 0) {
       selectedRows.push(
         rows.reduce(
           (bestRow, nextRow) => {
-            const bestDate = new Date(bestRow.getValue('Collection_date'))
-            const nextDate = new Date(nextRow.getValue('Collection_date'))
+            const bestDate = new Date(bestRow.data[indexCollectionDate])
+            const nextDate = new Date(nextRow.data[indexCollectionDate])
             const bestMonthDiff = Math.abs(bestDate.getMonth() - 6)
             const nextMonthDiff = Math.abs(nextDate.getMonth() - 6)
             if (bestMonthDiff < nextMonthDiff) {
@@ -45,7 +51,7 @@ const filterSamples = (sheet) => {
         )
       )
     }
-    perPatientRows[patientId] = selectedRows
+    perPatientRows[key] = selectedRows
   }
   // Update rows
   const newRows = []
@@ -61,22 +67,23 @@ const filterSamples = (sheet) => {
 }
 
 const addNumbers = (sheet) => {
-  const generator = getCode()
-  const buffyLoc = sheet.getColumnIndex('Location_BuffyCoat')
-  const plasmaLoc = sheet.getColumnIndex('Location_Plasma')
+  const generator = getCode(39782)
+  // const buffyLoc = sheet.getColumnIndex('Location_BuffyCoat')
+  const indexLocationPlasma = sheet.getColumnIndex('Location_Plasma')
   for (const row of sheet.rows) {
-    const buffy = row.getValue('BuffyCoat aanwezig?') == 1
-    const plasma = row.getValue('Plasma aanwezig?') == 1
-    if (buffy) {
-      row.data[buffyLoc] = generator.next().value
-    }
-    if (plasma) {
-      row.data[plasmaLoc] = generator.next().value
-    }
+    // const buffy = row.getValue('BuffyCoat aanwezig?') == 1
+    // const plasma = row.getValue('Plasma aanwezig?') == 1
+    // if (buffy) {
+    //   row.data[buffyLoc] = generator.next().value
+    // }
+    // if (plasma) {
+      row.data[indexLocationPlasma] = generator.next().value
+    // }
   }
 }
 
 const _getCode = counter => {
+  /** @type {string|number} */
   let plaats = Math.floor(1 + counter % 81)
   const doos = Math.floor(1 + (counter / ( 81 )) % 4)
   const schuif_row = Math.floor(1 + ( counter / ( 81 * 4 )) % 7)
@@ -89,8 +96,7 @@ const _getCode = counter => {
   return `${freezer}${vak}-${schuif_row}${schuif_col}-${doos}-${plaats}`
 }
 
-function * getCode () {
-  let counter = 0
+function * getCode (counter = 0) {
   while (true) {
     yield _getCode(counter++)
   }
@@ -101,17 +107,15 @@ const main = async () => {
   console.log('Reading file')
   await xls.read()
   console.log(`Read ${xls.sheetNames.length} sheets`)
-  for (const sheetName of xls.sheetNames) {
-    console.log(`${sheetName}: ${xls.getSheet(sheetName).length} x ${xls.getSheet(sheetName).columnNames.length}`)
-  }
   const fromSheet = xls.getSheet('Tbl_Samples_1')
   const toSheet = xls.getSheet('Tbl_Samples_2')
   console.log('Filtering samples')
   filterSamples(fromSheet)
+  const indexPatientID = toSheet.getColumnIndex('PatientID')
   toSheet.rows = [...fromSheet.rows, ...toSheet.rows].sort(
     (a, b) => {
-      const valA = a.getValue('Sample_Code')
-      const valB = b.getValue('Sample_Code')
+      const valA = a.data[indexPatientID]
+      const valB = b.data[indexPatientID]
       if (valA < valB) {
         return -1
       } else if (valA === valB) {
