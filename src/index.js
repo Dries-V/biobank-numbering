@@ -1,6 +1,6 @@
 const { Excel, Sheet } = require('./excel')
 
-const EXAMPLE = '/home/dries/Git/biobank-numbering/example/Biobank_aanvulling_2000-2006_bis.xlsx'
+const EXAMPLE = '/home/dries/Git/biobank-numbering/example/Biobank aanvulling 2018.xlsx'
 
 const filterSamples = (sheet) => {
   const indexPatientID = sheet.getColumnIndex('PatientID')
@@ -24,7 +24,7 @@ const filterSamples = (sheet) => {
   for (const [key, rows] of Object.entries(perPatientRows)) {
     const selectedRows = rows.filter(
       row =>
-       !(row.data[indexVLSymbol] === '<' && parseInt(row.data[indexVLResult]) === 50)
+       !(row.data[indexVLSymbol] === '<' && parseInt(row.data[indexVLResult]) === 20)
     )
     if (selectedRows.length === 0) {
       selectedRows.push(
@@ -67,18 +67,20 @@ const filterSamples = (sheet) => {
 }
 
 const addNumbers = (sheet) => {
-  const generator = getCode(39782)
-  // const buffyLoc = sheet.getColumnIndex('Location_BuffyCoat')
+  const generator = getCode(49973) // B1-15-1-78
+  const buffyLoc = sheet.getColumnIndex('Location_BuffyCoat')
   const indexLocationPlasma = sheet.getColumnIndex('Location_Plasma')
+  const statusBuffy = sheet.getColumnIndex('Status_BuffyCoat')
+  const statusPlasma = sheet.getColumnIndex('Status_Plasma')
   for (const row of sheet.rows) {
-    // const buffy = row.getValue('BuffyCoat aanwezig?') == 1
-    // const plasma = row.getValue('Plasma aanwezig?') == 1
-    // if (buffy) {
-    //   row.data[buffyLoc] = generator.next().value
-    // }
-    // if (plasma) {
+    const buffy = row.data[statusBuffy] === 1 || row.data[statusBuffy] === '1'
+    const plasma = row.data[statusPlasma] === 1 || row.data[statusPlasma] === '1'
+    if (buffy) {
+      row.data[buffyLoc] = generator.next().value
+    }
+    if (plasma) {
       row.data[indexLocationPlasma] = generator.next().value
-    // }
+    }
   }
 }
 
@@ -107,15 +109,15 @@ const main = async () => {
   console.log('Reading file')
   await xls.read()
   console.log(`Read ${xls.sheetNames.length} sheets`)
-  const fromSheet = xls.getSheet('Tbl_Samples_1')
-  const toSheet = xls.getSheet('Tbl_Samples_2')
+  const fromSheet = xls.getSheet('Tbl_Samples_1') || xls.getSheet('Tbl_Samples_1 ')
+  const toSheet = xls.getSheet('Tbl_Samples_2') || xls.getSheet('Tbl_Samples_2 ')
   console.log('Filtering samples')
   filterSamples(fromSheet)
-  const indexPatientID = toSheet.getColumnIndex('PatientID')
+  const indexSampleCode = fromSheet.getColumnIndex('Sample_Code')
   toSheet.rows = [...fromSheet.rows, ...toSheet.rows].sort(
     (a, b) => {
-      const valA = a.data[indexPatientID]
-      const valB = b.data[indexPatientID]
+      const valA = a.data[indexSampleCode]
+      const valB = b.data[indexSampleCode]
       if (valA < valB) {
         return -1
       } else if (valA === valB) {
@@ -127,7 +129,11 @@ const main = async () => {
   )
   addNumbers(toSheet)
   console.log('Writing file')
-  await xls.write('/home/dries/Git/biobank-numbering/example/filtered.xlsx')
+  try {
+    await xls.write('/home/dries/Git/biobank-numbering/example/filtered.xlsx')
+  } catch (err) {
+    console.error('Failed while writing: ', err)
+  }
 }
 
 main()
