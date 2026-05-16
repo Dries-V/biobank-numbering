@@ -1,4 +1,4 @@
-import readExcelFile from 'read-excel-file'
+import readExcelFile from 'read-excel-file/node'
 import * as xls from 'excel4node'
 
 export type CellValue = string | number | boolean | Date | null

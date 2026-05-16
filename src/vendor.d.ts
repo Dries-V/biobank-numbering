@@ -1,4 +1,4 @@
-declare module 'read-excel-file' {
+declare module 'read-excel-file/node' {
   type CellValue = string | number | boolean | Date | null
 
   function readExcelFile(file: string, options: { getSheets: true }): Promise<{ name: string }[]>

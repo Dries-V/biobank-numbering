@@ -37,8 +37,8 @@ export const parseArguments = () => {
     .option('sample-code-column', {
       alias: 's',
       type: 'string',
-      default: 'Sample_Code',
-      describe: 'Name of the column where sample cods should be written to.\n\tdefault: Sample_Code'
+      default: 'Sample-Code',
+      describe: 'Name of the column where sample cods should be written to.\n\tdefault: Sample-Code'
     })
     .option('patient-id-column', {
       type: 'string',
