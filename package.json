@@ -2,6 +2,11 @@
   "name": "biobank-numbering",
   "version": "0.0.0",
   "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts",
+    "demo": "ts-node src/index.ts --input ./example/input.xlsx --output ./example/output.xlsx --first-code B2-25-4-45"
+  },
   "repository": "https://github.com/Dries-V/biobank-numbering.git",
   "author": "Dries Vaneechoutte <vaneechoutte.dries@gmail.com>",
   "license": "MIT",
@@ -9,7 +14,13 @@
   "dependencies": {
     "excel4node": "^1.7.2",
     "read-excel-file": "^4.0.6",
+    "ts-node": "^10.9.2",
     "xlsx-to-json": "^0.3.0",
-    "yargs": "^15.3.1"
+    "yargs": "^17"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "globals": "^17.6.0",
+    "typescript": "^5.0.0"
   }
 }

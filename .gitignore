@@ -106,4 +106,4 @@ dist
 .tern-port
 
 # Custom
-example/
+lib/
