@@ -1,4 +1,4 @@
-import { Sheet } from './excel.ts'
+import { Sheet } from './excel'
 
 export const mergeSamples = (fromSheet: Sheet, toSheet: Sheet, sampleCodeColumn: string) => {
   const indexSampleCode = fromSheet.getColumnIndex(sampleCodeColumn)

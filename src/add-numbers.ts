@@ -1,5 +1,5 @@
-import { Sheet } from './excel.ts'
-import { getCodeGenerator } from './get-code.ts'
+import { Sheet } from './excel'
+import { getCodeGenerator } from './get-code'
 
 export const addNumbers = (sheet: Sheet, firstIndex: number): void => {
   const generator = getCodeGenerator(firstIndex)

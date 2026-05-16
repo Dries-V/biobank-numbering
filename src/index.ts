@@ -1,9 +1,10 @@
-import { addNumbers } from './add-numbers.ts'
-import { Excel } from './excel.ts'
-import { filterSamples } from './filter-samples.ts'
-import { getIndex } from './get-code.ts'
-import { mergeSamples } from './merge-samples.ts'
-import { parseArguments } from './parse-arguments.ts'
+import { resolve } from 'node:path'
+import { addNumbers } from './add-numbers'
+import { Excel } from './excel'
+import { filterSamples } from './filter-samples'
+import { getIndex } from './get-code'
+import { mergeSamples } from './merge-samples'
+import { parseArguments } from './parse-arguments'
 
 const main = async (): Promise<void> => {
   console.log('Parsing arguments')
@@ -22,8 +23,8 @@ const main = async (): Promise<void> => {
 
   const firstIndex = getIndex(firstCode)
 
-  console.log('Reading file')
-  const xls = await Excel.fromFile(input)
+  console.log(`Reading file ${input}`)
+  const xls = await Excel.fromFile(resolve(input))
   const fromSheet = xls.getSheet(fromSheetName)
   const toSheet = xls.getSheet(toSheetName)
 
@@ -38,7 +39,7 @@ const main = async (): Promise<void> => {
 
   console.log(`Writing to output file '${output}'`)
   try {
-    await xls.write(output)
+    await xls.write(resolve(output))
   } catch (err) {
     console.error('Failed while writing: ', err)
   }

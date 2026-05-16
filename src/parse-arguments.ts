@@ -22,13 +22,13 @@ export const parseArguments = () => {
       default: 'A1-11-1-01',
       describe: 'The first code to assign'
     })
-    .option('from-sheet-name', {
+    .option('from-sheet', {
       alias: 'f',
       type: 'string',
       default: 'Tbl_Samples_1',
       describe: 'The name of the Sheet with samples that need to be added.\n\tdefault: Tbl_Samples_1'
     })
-    .option('to-sheet-name', {
+    .option('to-sheet', {
       alias: 't',
       type: 'string',
       default: 'Tbl_Samples_2',
@@ -63,15 +63,15 @@ export const parseArguments = () => {
     .parseSync()
 
   return {
-    input: argv.i as string,
-    output: argv.o as string,
-    firstCode: argv.c as string,
-    fromSheetName: argv.f as string,
-    toSheetName: argv.t as string,
-    sampleCodeColumn: argv.s as string,
-    patientIdColumn: argv['patient-id-column'] as string,
-    collectionDateColumn: argv['collection-date-column'] as string,
-    vlSymbolColumn: argv['vl-symbol-column'] as string,
-    vlResultColumn: argv['vl-result-column'] as string
+    input: argv['input'],
+    output: argv['output'],
+    firstCode: argv['first-code'],
+    fromSheetName: argv['from-sheet'],
+    toSheetName: argv['to-sheet'],
+    sampleCodeColumn: argv['sample-code-column'],
+    patientIdColumn: argv['patient-id-column'],
+    collectionDateColumn: argv['collection-date-column'],
+    vlSymbolColumn: argv['vl-symbol-column'],
+    vlResultColumn: argv['vl-result-column']
   }
 }

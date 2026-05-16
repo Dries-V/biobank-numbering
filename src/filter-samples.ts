@@ -1,4 +1,4 @@
-import { Row, Sheet } from './excel.ts'
+import { Row, Sheet } from './excel'
 
 // For each patient-year combination, removes rows with an undetectable viral load (VL_Symbol '<'
 // and VL_Result 20). If all rows for a patient-year are undetectable, keeps the single row
