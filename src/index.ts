@@ -18,7 +18,11 @@ const main = async (): Promise<void> => {
     patientIdColumn,
     collectionDateColumn,
     vlSymbolColumn,
-    vlResultColumn
+    vlResultColumn,
+    statusBuffycoatColumn,
+    statusPlasmaColumn,
+    locationBuffycoatColumn,
+    locationPlasmaColumn
   } = parseArguments()
 
   const firstIndex = getIndex(firstCode)
@@ -28,14 +32,21 @@ const main = async (): Promise<void> => {
   const fromSheet = xls.getSheet(fromSheetName)
   const toSheet = xls.getSheet(toSheetName)
 
-  console.log(`Filtering samples in Sheet '${fromSheet}'`)
+  console.log(`Filtering samples in Sheet '${fromSheetName}'`)
   filterSamples(fromSheet, patientIdColumn, collectionDateColumn, vlSymbolColumn, vlResultColumn)
 
-  console.log(`Merging with samples from '${toSheet}'`)
+  console.log(`Merging with samples from '${toSheetName}'`)
   mergeSamples(fromSheet, toSheet, sampleCodeColumn)
 
   console.log(`Writing sample codes, starting with '${firstCode}'`)
-  addNumbers(toSheet, firstIndex)
+  addNumbers(
+    toSheet,
+    firstIndex,
+    statusBuffycoatColumn,
+    statusPlasmaColumn,
+    locationBuffycoatColumn,
+    locationPlasmaColumn
+  )
 
   console.log(`Writing to output file '${output}'`)
   try {

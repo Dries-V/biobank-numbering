@@ -1,20 +1,27 @@
 import { Sheet } from './excel'
 import { getCodeGenerator } from './get-code'
 
-export const addNumbers = (sheet: Sheet, firstIndex: number): void => {
+export const addNumbers = (
+  sheet: Sheet,
+  firstIndex: number,
+  statusBuffycoatColumn: string,
+  statusPlasmaColumn: string,
+  locationBuffycoatColumn: string,
+  locaitonPlasmaColumn: string
+): void => {
   const generator = getCodeGenerator(firstIndex)
-  const buffyLoc = sheet.getColumnIndex('Location_BuffyCoat')!
-  const indexLocationPlasma = sheet.getColumnIndex('Location_Plasma')!
-  const statusBuffy = sheet.getColumnIndex('Status_BuffyCoat')!
-  const statusPlasma = sheet.getColumnIndex('Status_Plasma')!
+  const statusBuffycoat = sheet.getColumnIndex(statusBuffycoatColumn)
+  const statusPlasma = sheet.getColumnIndex(statusPlasmaColumn)
+  const locationBuffycoat = sheet.getColumnIndex(locationBuffycoatColumn)
+  const locationPlasma = sheet.getColumnIndex(locaitonPlasmaColumn)
   for (const row of sheet.rows) {
-    const buffy = row.data[statusBuffy] === 1 || row.data[statusBuffy] === '1'
+    const buffy = row.data[statusBuffycoat] === 1 || row.data[statusBuffycoat] === '1'
     const plasma = row.data[statusPlasma] === 1 || row.data[statusPlasma] === '1'
     if (buffy) {
-      row.data[buffyLoc] = generator.next().value
+      row.data[locationBuffycoat] = generator.next().value
     }
     if (plasma) {
-      row.data[indexLocationPlasma] = generator.next().value
+      row.data[locationPlasma] = generator.next().value
     }
   }
 }

@@ -30,7 +30,7 @@ export class Sheet {
 
   constructor(data: CellValue[][]) {
     this._colNames = data[0]
-    this._colNameToIndex = Object.fromEntries(this._colNames.map((val, i) => [val, i]))
+    this._colNameToIndex = Object.fromEntries(this._colNames.map((val, i) => [val?.toString().trim(), i]))
     this._rows = data.slice(1).map((vals) => new Row(vals))
   }
 
@@ -67,7 +67,7 @@ export class Excel {
     const sheetNames = await readExcelFile(file, { getSheets: true })
     for (const { name: sheetName } of sheetNames) {
       const sheetData = await readExcelFile(file, { sheet: sheetName })
-      sheets[sheetName] = new Sheet(sheetData)
+      sheets[sheetName.trim()] = new Sheet(sheetData)
     }
     return new Excel(sheets)
   }

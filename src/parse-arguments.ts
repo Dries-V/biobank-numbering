@@ -38,7 +38,7 @@ export const parseArguments = () => {
       alias: 's',
       type: 'string',
       default: 'Sample-Code',
-      describe: 'Name of the column where sample cods should be written to.\n\tdefault: Sample-Code'
+      describe: 'Name of the column with sample codes.\n\tdefault: Sample-Code'
     })
     .option('patient-id-column', {
       type: 'string',
@@ -60,6 +60,26 @@ export const parseArguments = () => {
       default: 'VL_Result',
       describe: 'Name of the column with VL results.\n\tdefault: VL_Result'
     })
+    .option('status-buffycoat-column', {
+      type: 'string',
+      default: 'Status_BuffyCoat',
+      describe: 'Name of the column with BuffyCoat status.\n\tdefault: Status_BuffyCoat'
+    })
+    .option('status-plasma-column', {
+      type: 'string',
+      default: 'Status_Plasma',
+      describe: 'Name of the column with Plasma status.\n\tdefault: Status_Plasma'
+    })
+    .option('location-buffycoat-column', {
+      type: 'string',
+      default: 'Location_BuffyCoat',
+      describe: 'Name of the column where buffycoat locations should be written.\n\tdefault: Location_BuffyCoat'
+    })
+    .option('location-plasma-column', {
+      type: 'string',
+      default: 'Location_Plasma',
+      describe: 'Name of the column where plasma locations should be written.\n\tdefault: Location_Plasma'
+    })
     .parseSync()
 
   return {
@@ -72,6 +92,10 @@ export const parseArguments = () => {
     patientIdColumn: argv['patient-id-column'],
     collectionDateColumn: argv['collection-date-column'],
     vlSymbolColumn: argv['vl-symbol-column'],
-    vlResultColumn: argv['vl-result-column']
+    vlResultColumn: argv['vl-result-column'],
+    statusBuffycoatColumn: argv['status-buffycoat-column'],
+    statusPlasmaColumn: argv['status-plasma-column'],
+    locationBuffycoatColumn: argv['location-buffycoat-column'],
+    locationPlasmaColumn: argv['location-plasma-column']
   }
 }
