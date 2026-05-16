@@ -74,6 +74,16 @@ This downloads the libraries the script depends on. It only needs to be done onc
 
 ---
 
+### 6. Check the installation
+
+If everything was set up correctly, you can run a demo of the script with:
+
+```bash
+yarn run demo
+```
+
+This will take the Excel file from `./example/input.xlsx`, and should produce `./example/output.xslx`.
+
 ## Running the script
 
 The script takes an input Excel file and writes a new Excel file with the assigned location codes filled in.
@@ -81,14 +91,10 @@ The script takes an input Excel file and writes a new Excel file with the assign
 ### Basic usage
 
 ```bash
-yarn start --input "path/to/input.xlsx" --output "path/to/output.xlsx"
+yarn start --input "path/to/input.xlsx" --output "path/to/output.xlsx" --first-code "A1-11-1-01"
 ```
 
-**Replace the paths** with the actual locations of your files. You can use relative paths (relative to where your terminal is) or full absolute paths. Example:
-
-```bash
-yarn start --input "/Users/yourname/Documents/Biobank aanvulling 2024.xlsx" --output "/Users/yourname/Documents/filtered.xlsx"
-```
+**Replace the paths** with the actual locations of your files. You can use relative paths (relative to where your terminal is) or full absolute paths.
 
 > **Tip:** you can drag a file from Finder into the terminal window and it will paste the full path automatically.
 
